@@ -5,8 +5,10 @@ const fs = require('fs').promises;
 const emptyFunction = async() => {};
 const defaultAfterWritingNewFile = async(filename) => console.log(`${filename} was written`);
 const outputFolder = './output/'
+
+let counter = 0;
 const writeImageFilename = async (data) => {
-    const filename = join(outputFolder, Date.now().toString() + '.jpg');
+    const filename = join(outputFolder, counter++ + '.jpg');
     await fs.writeFile(filename, data, 'base64');
     return filename;
 };
