@@ -1,7 +1,2 @@
-/.vscode
-/example.pdf
-/example.png
-/node_modules
-/output/
-/test/
-
+/node_modules/
+.build/frames/*

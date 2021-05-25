@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Create Frames",
+            "preLaunchTask": "Clean",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\index.js"
+        },
+        {
+            "type": "PowerShell", 
+            "request": "launch", 
+            "name": "Build Video", 
+            "script": "./build.ps1", 
+            "cwd": "${workspaceRoot}"
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "clean.ps1"
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "build.ps1"
+        }
+    ]
+}
