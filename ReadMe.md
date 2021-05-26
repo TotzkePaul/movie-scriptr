@@ -1,14 +1,18 @@
-This is the human version of the animation. (I haven't compared the timing TBH. If you wait a couple minutes for the planets back.):
+This is the human version of the animation. (If you wait a couple minutes for the planets back.):
 https://totzkepaul.github.io/
 
 
-Video.mp4:https://youtu.be/_qzZHwnw4jg
+Video.mp4:
+
+https://youtu.be/_qzZHwnw4jg
 
 
-Source Code of the 
+Source Code for my gh-page: 
+
 https://github.com/TotzkePaul/totzkepaul.github.io
 
 This collects the frames by calling moveCamera() and screenshot in a loop:
+
 https://github.com/TotzkePaul/movie-scriptr/blob/master/index.js
 
 
