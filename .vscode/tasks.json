@@ -16,7 +16,14 @@
             "label": "CreateFrames",
             "type": "npm",
             "script": "run",
-            "dependsOn": ["Clean"]
+            "dependsOn": ["Clean"],
+            "options": {
+                "env": {
+                    "CLEAN":"true",
+                    "FFMPEG_PATH" : "../ffmpeg/bin/ffmpeg.exe",
+                    "FFPROBE_PATH" : "../ffmpeg/bin/ffprobe.exe"
+                }
+            }
         }
     ]
 }

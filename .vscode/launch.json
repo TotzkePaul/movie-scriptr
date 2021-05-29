@@ -5,19 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "PowerShell", 
+            "request": "launch", 
+            "name": "Clean", 
+            "script": "./clean.ps1", 
+            "cwd": "${workspaceRoot}"
+        },
+        {
             "type": "pwa-node",
             "request": "launch",
             "name": "Create Video",
+            "envFile": "${workspaceFolder}/.env",
             "preLaunchTask": "Clean",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\index.js",
-            "env": {
-                "CLEAN":"true",
-                "FFMPEG_PATH" : "../ffmpeg/bin/ffmpeg.exe",
-                "FFPROBE_PATH" : "../ffmpeg/bin/ffprobe.exe"
-            }
+            
             
         },
         {
