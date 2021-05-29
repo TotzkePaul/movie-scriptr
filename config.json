@@ -1,0 +1,26 @@
+{
+    "videos" : [
+        { 
+            "name": "demo", 
+            "type": "mp4",
+            "fps": 30,
+            "baseurl": "https://threejs.org/examples/",
+            "source": "../video_assets/",
+            "scenes":[                
+                {"page":"webgl_loader_collada_skinning.html", "duration": 5000},
+                {"page":"webgl_effects_parallaxbarrier.html", "duration": 10000},
+                {"page":"webgl_lines_sphere.html", "duration": 5000},
+                {"page":"webgl_test_memory.html", "duration": 3000},
+                {"page":"webgl_buffergeometry_selective_draw.html", "duration": 3000},
+                {"page":"webgl_postprocessing_glitch.html", "duration": 3000},
+                {"page":"webgl_custom_attributes.html", "duration": 3000},
+                {"page":"webxr_vr_rollercoaster.html", "duration": 3000},
+                {"page":"css3d_periodictable.html", "duration": 3000},
+                {"page":"css3d_sprites.html", "duration": 3000},
+                {"page":"webgl_loader_fbx.html", "duration": 3000},
+                {"page":"webgl_loader_stl.html", "duration": 60000},
+                {"page":"webgl_points_dynamic.html", "duration": 3000}
+            ]
+        }
+    ]
+}

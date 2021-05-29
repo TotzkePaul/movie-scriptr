@@ -4,11 +4,13 @@
   "description": "Compile Movie Scripts",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node index.js"
   },
   "author": "Paul Totzke",
   "license": "ISC",
   "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
     "fs": "0.0.1-security",
     "puppeteer": "^9.1.1",
     "timecut": "^0.2.0"

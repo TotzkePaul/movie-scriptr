@@ -12,12 +12,24 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\index.js"
+            "program": "${workspaceFolder}\\index.js",
+            "env": {
+                "FFMPEG_PATH" : "./.build/ffmpeg.exe"
+            }
+            
+        },
+        {
+            "type": "PowerShell", 
+            "request": "launch", 
+            "name": "Build Video-old", 
+            "script": "./build.ps1", 
+            "cwd": "${workspaceRoot}"
         },
         {
             "type": "PowerShell", 
             "request": "launch", 
             "name": "Build Video", 
+            "preLaunchTask":"CreateFrames",
             "script": "./build.ps1", 
             "cwd": "${workspaceRoot}"
         }

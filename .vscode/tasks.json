@@ -9,7 +9,19 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "build.ps1"
+            "command": "build.ps1",
+            "dependsOn": ["CreateFrames"]
+        },
+        {
+            "label": "CreateFrames",
+            "type": "npm",
+            "script": "run",
+            "dependsOn": ["Clean"],
+            "options": {
+                "env": {
+                    "FFMPEG_PATH" : "./.build/ffmpeg.exe"
+                }
+            }
         }
     ]
 }
