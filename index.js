@@ -5,7 +5,8 @@ var ffmpeg = require('fluent-ffmpeg');
 const { join } = require('path');
 const fs = require('fs'); //async access to the file system?
 const path = require('path');
-const outputFolder = './.build/';
+const buildFolder = './.build/';
+const rebuild = process.env.CLEAN == 'true';
 
 function wait(timeout) { return new Promise(resolve => { setTimeout(resolve, timeout); }); }
 
@@ -18,25 +19,60 @@ function ensureDir(dirname) {
     fs.mkdirSync(dirname);
   }
 
-  const buildImageSet = async (src, dst) => {    
-    var command = ffmpeg();
+  async function mergeFilesAsync(files, folder, filename)
+{
+	return new Promise((resolve, reject) => {
+	
+		var cmd = ffmpeg({priority: 20}).videoCodec('h264').fps(29.7)
+		.on('error', function(err) {
+			console.log('An error occurred: ' + err.message);
+			resolve()
+		})
+		.on('end', function() {
+			console.log(filename + ': Processing finished !');
+			resolve()
+		});
+
+		for (var i = 0; i < files.length; i++)
+		{
+			cmd.input(files[i]);
+		}
+	
+		cmd.mergeToFile(folder + "/" + filename, folder);
+	});
+}
+
+  const buildImageSet = async (src, dst, fps) => {    
+    var command = ffmpeg(src+"%0d.jpg");
     command.on('error', function(err) { console.log('An error occurred: ' + err.message); });
     command.on('start', function(commandLine) {    console.log('Spawned Ffmpeg with command: ' + commandLine);});
     command.on('end', function() {    console.log('Transcoding succeeded !');});
     command.on('codecData', function(data) {    console.log('Input is ' + data.audio + ' audio ' +      'with ' + data.video + ' video');});
     command.on('progress', function(progress) {console.log('Processing: ' + progress.percent + '% done');});
 
-    let fps = '30';
     
-    command.outputOptions([
-        '-y',
-        '-framerate', fps,
-        '-start_number',  '0',
-        '-i', src+"%0d.png",
-        '-c:v', 'libx264'
-      ]);
+    command
+    .inputFPS(fps)
+    .videoCodec('libx264');
 
     command.save(dst);
+};
+
+const mergeScenes = async (video) => {    
+    var command = ffmpeg().videoCodec('libx264').outputFPS(video.fps);
+    command.on('error', function(err) { console.log('Error: ', err); });
+    command.on('start', function(commandLine) {    console.log('Spawned Ffmpeg with command: ' + commandLine);});
+    command.on('end', function() {    console.log('Finished mergeScenes!');});
+    command.on('codecData', function(data) {    console.log('Input is ' + data.audio + ' audio ' +      'with ' + data.video + ' video');});
+    command.on('progress', function(progress) {console.log('Processing: ' + progress + '% done',progress);});
+
+    var videoNames = [];
+
+    video.scenes.forEach(value => videoNames.push(value.dst));
+
+    videoNames.forEach(file => command = command.mergeAdd(file));
+
+    command.mergeToFile(video.dst);
 };
 
 const recordScreenCast = async (scene) => {
@@ -47,13 +83,14 @@ const recordScreenCast = async (scene) => {
 
     const client = await page.target().createCDPSession();
     const canScreenshot = true;
-    let hasScreenShot = false;
+    let screenshots = [];
     let i = 0;
     client.on('Page.screencastFrame', async (frameObject) => {
         if (canScreenshot) {
-            const filename = `${scene.src}${i++}.png`;            
+            const filename = `${scene.src}${i++}.jpg`;            
             await fs.promises.writeFile(filename, frameObject.data, 'base64');
             console.log(`${filename} was written`);
+            screenshots.push(filename);
             try {
                 await client.send('Page.screencastFrameAck', { sessionId: frameObject.sessionId});
                 hasScreenShot = true;
@@ -69,17 +106,18 @@ const recordScreenCast = async (scene) => {
     await start(); 
     await wait(scene.duration); 
     await stop();
+    await wait(500); // Prevent errors from 'await client.send('Page.screencastFrameAck', ...'
     await browser.close();
-    return hasScreenShot;
+    return screenshots;
 };
 
-
-
 const createScene = async (scene) => {
-    console.log("createScene ", scene);
-    const anyScreenShots = await recordScreenCast(scene);
-    if(anyScreenShots){
-        await buildImageSet(scene.src,scene.dst);  
+    console.log("createScene", scene);
+    const screenshots = await recordScreenCast(scene);
+    if(screenshots.length != 0){
+        const fps = screenshots.length/(scene.duration/1000)
+        console.log("createScene", "calling buildImageSet", scene.src,scene.dst);
+        await buildImageSet(scene.src,scene.dst, fps);  
     } else {
         console.log("createScene", "Error: No output", scene);
     }     
@@ -91,18 +129,25 @@ const createVideo = async (video) => {
         const scene = video.scenes[index];
         scene.id = index;
         scene.url = `${video.baseurl}${scene.page}`;       
-        scene.src = `${outputFolder}${video.name}/${index}/`;    
-        scene.dst = `${outputFolder}${video.name}/${index}/${index}.mp4`;  
+        scene.src = `${buildFolder}${video.name}/${index}/`;    
+        scene.dst = `${buildFolder}${video.name}/${index}/${index}.mp4`;  
         scene.video = video;
         ensureDir(scene.src);
-        await createScene(scene); 
+        if(rebuild){
+            await createScene(scene); 
+        }        
     }
 };
 
 (async () => {     
+    if(!rebuild){
+        console.log("Skipping all createScene")
+    }  
     for (const index in config.videos) {
         console.log("Video #", index);
         const video = config.videos[index];        
+        video.dst = `${buildFolder}${video.name}/${video.name}.${video.type}`;    
         await createVideo(video);
+        await mergeScenes(video);
     }
 })();

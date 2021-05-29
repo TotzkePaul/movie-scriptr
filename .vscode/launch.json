@@ -7,14 +7,16 @@
         {
             "type": "pwa-node",
             "request": "launch",
-            "name": "Create Frames",
+            "name": "Create Video",
             "preLaunchTask": "Clean",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\index.js",
             "env": {
-                "FFMPEG_PATH" : "./.build/ffmpeg.exe"
+                "CLEAN":"true",
+                "FFMPEG_PATH" : "../ffmpeg/bin/ffmpeg.exe",
+                "FFPROBE_PATH" : "../ffmpeg/bin/ffprobe.exe"
             }
             
         },
